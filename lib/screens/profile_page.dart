@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,6 +6,7 @@ import '../theme/app_colors.dart';
 import '../data/questions_data.dart';
 import 'question_detail_page.dart';
 import '../models/question.dart';
+import 'dart:typed_data';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,7 +18,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   String _username = 'Explorer';
   String _fullname = '';
-  String? _avatarPath;
+  Uint8List? _avatarBytes;
 
   @override
   void initState() {
@@ -32,12 +32,11 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _username = prefs.getString('username') ?? 'Explorer';
         _fullname = prefs.getString('fullname') ?? '';
-        _avatarPath = prefs.getString('avatarPath');
       });
     }
   }
 
-  Future<void> _pickAvatar() async {
+   Future<void> _pickAvatar() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(
       source: ImageSource.gallery,
@@ -45,11 +44,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
     if (picked == null) return;
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('avatarPath', picked.path);
+    final bytes = await picked.readAsBytes();
 
     if (!mounted) return;
-    setState(() => _avatarPath = picked.path);
+    setState(() => _avatarBytes = bytes);
   }
 
   Future<void> _logout() async {
@@ -154,10 +152,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       CircleAvatar(
                         radius: 34,
                         backgroundColor: AppColors.softBlue,
-                        backgroundImage: _avatarPath != null
-                            ? FileImage(File(_avatarPath!))
+                        backgroundImage: _avatarBytes != null
+                            ? MemoryImage(_avatarBytes!)
                             : null,
-                        child: _avatarPath == null
+                        child: _avatarBytes == null
                             ? Text(
                                 _username.isNotEmpty
                                     ? _username[0].toUpperCase()
