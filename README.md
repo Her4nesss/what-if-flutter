@@ -1,17 +1,44 @@
-# flutter_application_1
+# What If? 🌌
 
-A new Flutter project.
+Aplikasi mobile berbasis Flutter untuk mengeksplorasi pertanyaan hipotetis 
+secara interaktif — bukan sekadar mendapat satu jawaban, tapi melihat 
+dampaknya dari berbagai dimensi (biologi, sosial, ekonomi, teknologi, 
+lingkungan, hingga konsekuensi tak terduga).
 
-## Getting Started
+## ✨ Fitur
 
-This project is a starting point for a Flutter application.
+- 🔐 Login & Sign Up dengan penyimpanan data lokal
+- 🏠 Home Page dengan daftar pertanyaan dinamis (`ListView.builder`), pencarian, dan filter kategori
+- 📖 Halaman detail pertanyaan dengan jawaban singkat, timeline interaktif, dan 6 dimensi dampak
+- 🔖 Simpan pertanyaan favorit (bookmark)
+- 👤 Profile Page dengan progres eksplorasi dan riwayat
+- 🧑‍🚀 Maskot pemandu orisinal bernama **Kiro**
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Tech Stack
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- **Flutter** & **Dart**
+- `shared_preferences` — penyimpanan data lokal
+- `google_fonts` — tipografi kustom
+- `image_picker` — avatar profil
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📁 Struktur Folder
+lib/
+├── data/ # dataset pertanyaan
+├── models/ # class Question (blueprint object)
+├── screens/ # seluruh halaman tampilan
+└── theme/ # warna & tema aplikasi
+
+## 🚀 Cara Menjalankan
+
+```bash
+flutter pub get
+flutter run
+```
+
+## 📸 Screenshot
+
+*(tambahkan screenshot aplikasi kamu di sini)*
+
+## 👤 Author
+
+Dibuat oleh Muti
