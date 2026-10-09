@@ -318,3 +318,23 @@ List<Question> get recentlyExploredQuestions => explorationHistory
 
 List<Question> get savedQuestions =>
     questionsData.where((q) => q.isSaved).toList();
+    
+// Kategori diambil otomatis dari data, jadi kategori baru langsung muncul
+List<String> get availableCategories =>
+    questionsData.map((q) => q.category).toSet().toList();
+
+// Foto tile kategori = foto pertanyaan pertama di kategori itu
+String categoryImagePath(String category) =>
+    questionsData.firstWhere((q) => q.category == category).imagePath;
+
+// Pertanyaan pilihan di Home, dipilih manual (ganti id sesuai selera)
+const List<String> featuredQuestionIds = [
+  'humans-no-sleep',
+  'earth-stop-rotating',
+  'moon-disappear',
+  'breathe-underwater',
+  'read-minds', 
+];
+
+List<Question> get featuredQuestions =>
+    featuredQuestionIds.map(getQuestionById).toList();

@@ -3,7 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/question.dart';
 import '../data/questions_data.dart';
 import '../theme/app_colors.dart';
+import '../widgets/question_row.dart';
+import '../widgets/topic_tile.dart';
+import 'categories_page.dart';
 import 'question_detail_page.dart';
+import 'question_list_page.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -13,7 +17,6 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  String? _selectedCategory;
   final _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -34,22 +37,17 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = categoryIcons.keys.toList();
-
-    // Kalau ada teks pencarian, cari berdasarkan judul
-    final searchResults = _searchQuery.isEmpty
-    ? <Question>[]
-    : questionsData.where((q) => q.matchesKeyword(_searchQuery)).toList();
-
-    final displayedQuestions = _selectedCategory == null
-        ? questionsData
-        : questionsData.where((q) => q.category == _selectedCategory).toList();
+    final categories = availableCategories;
+    final isSearching = _searchQuery.isNotEmpty;
+    final searchResults = isSearching
+        ? questionsData.where((q) => q.matchesKeyword(_searchQuery)).toList()
+        : <Question>[];
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -66,7 +64,7 @@ class _ExplorePageState extends State<ExplorePage> {
                         'What If?',
                         style: GoogleFonts.sora(
                           fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                           color: AppColors.textDark,
                         ),
                       ),
@@ -75,8 +73,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   IconButton(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Belum ada notifikasi baru')),
+                        const SnackBar(content: Text('Belum ada notifikasi baru')),
                       );
                     },
                     icon: const Icon(Icons.notifications_none),
@@ -84,11 +81,8 @@ class _ExplorePageState extends State<ExplorePage> {
                 ],
               ),
 
-              const SizedBox(height: 12),
-
-              // Kiro + sapaan
+              // Sapaan + Kiro
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Column(
@@ -97,32 +91,32 @@ class _ExplorePageState extends State<ExplorePage> {
                         Text(
                           'Hey, curious mind.',
                           style: GoogleFonts.sora(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
                             color: AppColors.textDark,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'What do you want to explore today?',
-                          style:
-                              TextStyle(fontSize: 13, color: Colors.grey.shade800),
+                          style: TextStyle(
+                              fontSize: 13, color: Colors.grey.shade700),
                         ),
                       ],
                     ),
                   ),
                   Image.asset(
                     'assets/images/kiro_mascot.png',
-                    width: 90,
+                    width: 80,
                     errorBuilder: (context, error, stackTrace) =>
-                        const SizedBox(width: 90),
+                        const SizedBox(width: 80),
                   ),
                 ],
               ),
 
               const SizedBox(height: 16),
 
-              // Search / Ask box
+              // Search
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 decoration: BoxDecoration(
@@ -156,11 +150,11 @@ class _ExplorePageState extends State<ExplorePage> {
                         icon: const Icon(Icons.arrow_forward,
                             color: Colors.white, size: 18),
                         onPressed: () {
-                          if (searchResults.isEmpty && _searchQuery.isNotEmpty) {
+                          if (isSearching && searchResults.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                    'Belum ada di database, coba pertanyaan pilihan di bawah'),
+                                    'Belum ada di database, coba kata kunci lain'),
                               ),
                             );
                           } else if (searchResults.length == 1) {
@@ -173,103 +167,80 @@ class _ExplorePageState extends State<ExplorePage> {
                 ),
               ),
 
-              // Hasil pencarian (kalau ada teks diketik)
-              if (_searchQuery.isNotEmpty) ...[
+              if (isSearching) ...[
+                // Hasil pencarian
                 const SizedBox(height: 16),
                 Text(
                   searchResults.isEmpty
                       ? 'Nggak ketemu, coba kata kunci lain'
-                      : 'Hasil pencarian',
-                  style: TextStyle(fontSize: 13, color: Colors.grey.shade800),
+                      : '${searchResults.length} hasil',
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
                 ),
-                const SizedBox(height: 8),
-                ...searchResults.asMap().entries.map((entry) => _QuestionCard(
-                      question: entry.value,
-                      index: entry.key + 1,
-                      onTap: () => _openQuestion(entry.value),
+                const SizedBox(height: 4),
+                ...searchResults.map((q) => QuestionRow(
+                      question: q,
+                      onTap: () => _openQuestion(q),
                     )),
               ] else ...[
-                const SizedBox(height: 24),
-                Text(
-                  'Explore Today',
-                  style: GoogleFonts.sora(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textDark,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: displayedQuestions.length,
-                  itemBuilder: (context, index) {
-                    final question = displayedQuestions[index];
-                    return _QuestionCard(
-                      question: question,
-                      index: index + 1,
-                      onTap: () => _openQuestion(question),
+                // Explore by Topic
+                const SizedBox(height: 20),
+                _SectionHeader(
+                  title: 'Explore by Topic',
+                  onSeeAll: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CategoriesPage()),
                     );
                   },
                 ),
-
-                const SizedBox(height: 20),
-                Text(
-                  'Explore by Topic',
-                  style: GoogleFonts.sora(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textDark,
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 92,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: SizedBox(
+                          width: 120,
+                          child: TopicTile(
+                            category: category,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      QuestionListPage(category: category),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 12),
-                GridView.count(
-                  crossAxisCount: 4,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.85,
-                  children: categories.map((category) {
-                    final isSelected = _selectedCategory == category;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedCategory = isSelected ? null : category;
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 52,
-                            height: 52,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? AppColors.primary
-                                  : AppColors.softBlue,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(categoryIcons[category] ?? '❓',
-                                style: const TextStyle(fontSize: 20)),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            category,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isSelected
-                                  ? AppColors.primary
-                                  : Colors.grey.shade700,
-                              fontWeight:
-                                  isSelected ? FontWeight.w600 : FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
+
+                // Featured Questions
+                const SizedBox(height: 20),
+                _SectionHeader(
+                  title: 'Featured Questions',
+                  onSeeAll: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const QuestionListPage()),
                     );
-                  }).toList(),
+                  },
                 ),
+                const SizedBox(height: 4),
+                ...featuredQuestions.map((q) => QuestionRow(
+                      question: q,
+                      onTap: () => _openQuestion(q),
+                    )),
               ],
             ],
           ),
@@ -279,88 +250,40 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 }
 
-class _QuestionCard extends StatelessWidget {
-  final Question question;
-  final int index;
-  final VoidCallback onTap;
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final VoidCallback onSeeAll;
 
-  const _QuestionCard({
-    required this.question,
-    required this.index,
-    required this.onTap,
-  });
+  const _SectionHeader({required this.title, required this.onSeeAll});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.grey.shade200),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.sora(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textDark,
+          ),
         ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 24,
-              child: Text(
-                index.toString().padLeft(2, '0'),
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.grey.shade400,
-                ),
+        InkWell(
+          onTap: onSeeAll,
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+            child: Text(
+              'See all',
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    question.category.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    question.title,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                question.imagePath,
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 60,
-                  height: 60,
-                  color: AppColors.softBlue,
-                  child: const Icon(Icons.image_not_supported,
-                      size: 18, color: Colors.grey),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

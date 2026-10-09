@@ -6,6 +6,8 @@ import 'screens/signup_page.dart';
 import 'screens/onboarding_page.dart';
 import 'theme/app_colors.dart';
 import 'screens/main_navigation_page.dart';
+import 'widgets/auth_shell.dart';
+import 'widgets/content_frame.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,22 +18,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseText = GoogleFonts.interTextTheme();
+    final boldText = baseText.copyWith(
+      bodyLarge: baseText.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+      bodyMedium: baseText.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+      bodySmall: baseText.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+    );
     return MaterialApp(
-      title: 'DaiLook',
+      title: 'What If?',
       debugShowCheckedModeBanner: false,
-
       theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: AppColors.background,
+    
+      
 
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primary,
-          primary: AppColors.primary,
-        ).copyWith(
-          surface: AppColors.background,
-        ),
-
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(),
+        textTheme: boldText,
 
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -50,11 +50,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/onboarding',
 
       routes: {
-        '/onboarding': (context) => const OnboardingPage(),
-        '/welcome': (context) => const WelcomePage(),
-        '/login': (context) => const LoginPage(),
-        '/signup': (context) => const SignupPage(),
-        '/home': (context) => const MainNavigationPage(),
+        '/onboarding': (context) => const AuthShell(child: OnboardingPage()),
+        '/welcome': (context) => const AuthShell(child: WelcomePage()),
+        '/login': (context) => const AuthShell(child: LoginPage()),
+        '/signup': (context) => const AuthShell(child: SignupPage()),
+        '/home': (context) => const ContentFrame(child: MainNavigationPage()),
       },
     );
   }
