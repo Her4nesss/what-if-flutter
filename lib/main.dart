@@ -7,7 +7,7 @@ import 'screens/onboarding_page.dart';
 import 'theme/app_colors.dart';
 import 'screens/main_navigation_page.dart';
 import 'widgets/auth_shell.dart';
-import 'widgets/content_frame.dart';
+import 'package:flutter/gestures.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
     );
     return MaterialApp(
       title: 'What If?',
+      scrollBehavior: AppScrollBehavior(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
     
@@ -54,8 +55,17 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => const AuthShell(child: WelcomePage()),
         '/login': (context) => const AuthShell(child: LoginPage()),
         '/signup': (context) => const AuthShell(child: SignupPage()),
-        '/home': (context) => const ContentFrame(child: MainNavigationPage()),
+        '/home': (context) => const MainNavigationPage(),
       },
     );
   }
+}
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
 }

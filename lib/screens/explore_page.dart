@@ -8,6 +8,8 @@ import '../widgets/topic_tile.dart';
 import 'categories_page.dart';
 import 'question_detail_page.dart';
 import 'question_list_page.dart';
+import '../widgets/auth_shell.dart';
+import 'explore_wide_view.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -37,6 +39,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (AuthShell.isWide(context)) return const ExploreWideView();
     final categories = availableCategories;
     final isSearching = _searchQuery.isNotEmpty;
     final searchResults = isSearching

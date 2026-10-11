@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/question.dart';
 import '../data/questions_data.dart';
 import '../theme/app_colors.dart';
+import '../widgets/auth_shell.dart';
+import '../widgets/content_frame.dart';
 
 class QuestionDetailPage extends StatefulWidget {
   final Question question;
@@ -22,6 +24,17 @@ const Map<String, IconData> dimensionIcons = {
   'Unexpected Consequences': Icons.help_outline,
 };
 
+String _kiroReaction(String category) {
+  const reactions = {
+    'Earth': 'Wah, ini bisa ngubah cara Bumi bekerja secara total!',
+    'Human': 'Coba bayangin kalau ini beneran kejadian ke tubuh kita...',
+    'Space': 'Ruang angkasa emang penuh kejutan ya!',
+    'Technology': 'Teknologi bisa berubah drastis kalau ini terjadi.',
+    'Mind': 'Ini bikin aku mikir ulang soal cara otak kerja.',
+  };
+  return reactions[category] ?? 'Pertanyaan yang menarik banget!';
+}
+
 class _QuestionDetailPageState extends State<QuestionDetailPage> {
   int _selectedStageIndex = 0;
 
@@ -32,9 +45,30 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
     recordExploration(widget.question.id);
   }
 
+  // Foto banner: mengisi ruang yang diberikan induknya
+  Widget _banner(Question q) {
+    return Image.asset(
+      q.imagePath,
+      width: double.infinity,
+      height: double.infinity,
+      fit: BoxFit.cover,
+      filterQuality: FilterQuality.high,
+      errorBuilder: (context, error, stackTrace) => Container(
+        color: AppColors.softBlue,
+        child: const Icon(Icons.image_not_supported,
+            size: 32, color: Colors.grey),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      ContentFrame(child: _buildPage(context));
+
+  Widget _buildPage(BuildContext context) {
     final question = widget.question;
+    final wide = AuthShell.isWide(context);
+
     final relatedQuestions = question.relatedQuestionIds
         .map((id) {
           try {
@@ -54,10 +88,11 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+          padding: EdgeInsets.fromLTRB(wide ? 32 : 20, 12, wide ? 32 : 20, 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header: kembali, label, bookmark
               Row(
                 children: [
                   IconButton(
@@ -71,7 +106,7 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade500,
+                      color: Colors.grey.shade700,
                       letterSpacing: 1,
                     ),
                   ),
@@ -91,6 +126,7 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
               ),
               const SizedBox(height: 12),
 
+              // Label kategori
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -108,29 +144,30 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                   ),
                 ),
               ),
-                           const SizedBox(height: 10),
+              const SizedBox(height: 10),
+
+              // Foto banner
               ClipRRect(
                 borderRadius: BorderRadius.circular(14),
-                child: Image.asset(
-                  question.imagePath,
-                  width: double.infinity,
-                  height: 160,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    width: double.infinity,
-                    height: 160,
-                    color: AppColors.softBlue,
-                    child: const Icon(Icons.image_not_supported,
-                        size: 32, color: Colors.grey),
-                  ),
-                ),
+                child: wide
+                    ? AspectRatio(
+                        aspectRatio: 16 / 7,
+                        child: _banner(question),
+                      )
+                    : SizedBox(
+                        width: double.infinity,
+                        height: 160,
+                        child: _banner(question),
+                      ),
               ),
               const SizedBox(height: 14),
+
+              // Judul dan jawaban singkat
               Text(
                 question.title,
                 style: GoogleFonts.sora(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
+                  fontSize: wide ? 28 : 24,
+                  fontWeight: FontWeight.w700,
                   height: 1.3,
                   color: AppColors.textDark,
                 ),
@@ -141,10 +178,12 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                 style: TextStyle(
                   fontSize: 14,
                   height: 1.6,
-                  color: Colors.grey.shade700,
+                  color: Colors.grey.shade800,
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Kiro + gelembung komentar
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -175,6 +214,7 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                   ),
                 ],
               ),
+
               // Timeline horizontal interaktif
               if (hasTimeline) ...[
                 const SizedBox(height: 28),
@@ -182,7 +222,7 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                   'What Happens Next?',
                   style: GoogleFonts.sora(
                     fontSize: 17,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textDark,
                   ),
                 ),
@@ -193,7 +233,8 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                     final isLast = index == question.timeline.length - 1;
                     return Expanded(
                       child: GestureDetector(
-                        onTap: () => setState(() => _selectedStageIndex = index),
+                        onTap: () =>
+                            setState(() => _selectedStageIndex = index),
                         child: Column(
                           children: [
                             Text(
@@ -201,11 +242,12 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 11,
-                                fontWeight:
-                                    isSelected ? FontWeight.w700 : FontWeight.w400,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w400,
                                 color: isSelected
                                     ? AppColors.primary
-                                    : Colors.grey.shade500,
+                                    : Colors.grey.shade700,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -216,7 +258,7 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                                     height: 2,
                                     color: index == 0
                                         ? Colors.transparent
-                                        : (isSelected || index <= _selectedStageIndex
+                                        : (index <= _selectedStageIndex
                                             ? AppColors.primary
                                             : Colors.grey.shade300),
                                   ),
@@ -228,7 +270,7 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                                     shape: BoxShape.circle,
                                     color: isSelected
                                         ? AppColors.primary
-                                        : Colors.grey.shade300,
+                                        : Colors.grey.shade400,
                                   ),
                                 ),
                                 Expanded(
@@ -268,27 +310,30 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                 ),
               ],
 
+              // Dimensi dampak
               const SizedBox(height: 28),
               Text(
                 'The Impact',
                 style: GoogleFonts.sora(
                   fontSize: 17,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textDark,
                 ),
               ),
               const SizedBox(height: 12),
               ...question.dimensions.entries.map(
-                (entry) => _DimensionTile(label: entry.key, content: entry.value),
+                (entry) =>
+                    _DimensionTile(label: entry.key, content: entry.value),
               ),
 
+              // Take It Further
               if (relatedQuestions.isNotEmpty) ...[
                 const SizedBox(height: 24),
                 Text(
                   'Take It Further',
                   style: GoogleFonts.sora(
                     fontSize: 17,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textDark,
                   ),
                 ),
@@ -358,7 +403,7 @@ class _DimensionTile extends StatelessWidget {
                   label,
                   style: const TextStyle(
                     fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textDark,
                   ),
                 ),
@@ -368,7 +413,7 @@ class _DimensionTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.5,
-                    color: Colors.grey.shade700,
+                    color: Colors.grey.shade800,
                   ),
                 ),
               ],
@@ -404,8 +449,10 @@ class _RelatedQuestionTile extends StatelessWidget {
             Expanded(
               child: Text(
                 question.title,
-                style:
-                    const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             const Icon(Icons.arrow_forward_ios, size: 12, color: Colors.grey),
@@ -414,14 +461,4 @@ class _RelatedQuestionTile extends StatelessWidget {
       ),
     );
   }
-}
-String _kiroReaction(String category) {
-  const reactions = {
-    'Earth': 'Wah, ini bisa ngubah cara Bumi bekerja secara total!',
-    'Human': 'Coba bayangin kalau ini beneran kejadian ke tubuh kita...',
-    'Space': 'Ruang angkasa emang penuh kejutan ya!',
-    'Technology': 'Teknologi bisa berubah drastis kalau ini terjadi.',
-    'Mind': 'Ini bikin aku mikir ulang soal cara otak kerja.',
-  };
-  return reactions[category] ?? 'Pertanyaan yang menarik banget!';
 }
