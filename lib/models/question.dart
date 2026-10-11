@@ -73,4 +73,7 @@ const Map<String, String> categoryIcons = {
   'Space': '🚀',
   'Technology': '🤖',
   'Mind': '🧠',
+  'Animals': '🐾',
+  'Universe': '🌌',
+  'Society': '🏙️',
 };

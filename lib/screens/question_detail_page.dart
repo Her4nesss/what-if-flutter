@@ -31,6 +31,9 @@ String _kiroReaction(String category) {
     'Space': 'Ruang angkasa emang penuh kejutan ya!',
     'Technology': 'Teknologi bisa berubah drastis kalau ini terjadi.',
     'Mind': 'Ini bikin aku mikir ulang soal cara otak kerja.',
+    'Animals': 'Hewan sekecil itu ternyata punya peran besar, ya.',
+    'Universe': 'Skalanya bikin pusing, tapi seru banget.',
+    'Society': 'Kalau ini terjadi, cara hidup kita bisa berubah total.',
   };
   return reactions[category] ?? 'Pertanyaan yang menarik banget!';
 }

@@ -173,7 +173,7 @@ final List<Question> questionsData = [
   Question(
     id: 'dinosaurs-alive',
     title: 'What if dinosaurs never went extinct?',
-    category: 'Earth',
+    category: 'Animals',
     imagePath: 'assets/images/dinosaurs_alive.jpg',
     shortAnswer:
         'Jika dinosaurus tidak pernah punah, evolusi kehidupan di Bumi akan berjalan sangat berbeda. Mamalia mungkin tidak menjadi kelompok dominan seperti sekarang, dan manusia mungkin tidak pernah muncul dalam bentuk yang sama.',
@@ -292,6 +292,131 @@ final List<Question> questionsData = [
     ],
     relatedQuestionIds: ['humans-no-sleep'],
   ),
+    Question(
+    id: 'insects-disappear',
+    title: 'What if all insects disappeared?',
+    category: 'Animals',
+    imagePath: 'assets/images/insects_disappear.jpg',
+    shortAnswer:
+        'Serangga sering dianggap pengganggu, padahal banyak tanaman pangan dan rantai makanan di darat bergantung pada mereka.',
+    dimensions: {
+      'Biology':
+          'Banyak burung, katak, kadal, dan ikan kehilangan sumber makanan utamanya, sementara tanaman berbunga kehilangan penyerbuknya.',
+      'Society':
+          'Pasar dan dapur rumah tangga akan kekurangan buah, sayur, dan kacang-kacangan yang bergantung pada penyerbukan serangga.',
+      'Economy':
+          'Nilai jasa penyerbukan saja diperkirakan mencapai ratusan miliar dolar per tahun, dan sektor pertanian akan terpukul keras.',
+      'Technology':
+          'Industri berbahan produk serangga (madu, sutra, pewarna alami) berhenti, dan petani harus memakai penyerbukan buatan yang mahal dan lambat.',
+      'Environment':
+          'Bangkai dan kotoran hewan menumpuk lebih lama karena banyak pengurai alami, seperti kumbang, lalat, dan semut, ikut hilang.',
+      'Unexpected Consequences':
+          'Penyakit yang ditularkan nyamuk akan hilang, tapi kemungkinan besar keuntungan itu kalah besar dibanding runtuhnya rantai makanan.',
+    },
+    timeline: [
+      const TimelineStage(
+          label: 'Hari 1',
+          description:
+              'Penyerbukan berhenti dan nyamuk serta lalat lenyap, tapi dampak besarnya belum terasa.'),
+      const TimelineStage(
+          label: 'Bulan 1',
+          description:
+              'Sisa organik mulai menumpuk, dan hewan pemakan serangga kekurangan makanan.'),
+      const TimelineStage(
+          label: 'Tahun 1',
+          description:
+              'Panen buah, sayur, dan kacang-kacangan anjlok, harga pangan melonjak.'),
+      const TimelineStage(
+          label: 'Dekade 1',
+          description:
+              'Banyak ekosistem darat runtuh dan krisis pangan menjadi masalah global.'),
+    ],
+    relatedQuestionIds: ['dinosaurs-alive', 'breathe-underwater'],
+  ),
+
+  Question(
+    id: 'alien-life',
+    title: 'What if we discovered alien life?',
+    category: 'Universe',
+    imagePath: 'assets/images/alien_life.jpg',
+    shortAnswer:
+        'Bahkan kalau yang ditemukan cuma mikroba di planet lain, itu berarti kehidupan bukan kejadian langka yang cuma terjadi sekali di Bumi.',
+    dimensions: {
+      'Biology':
+          'Ilmuwan bisa membandingkan kehidupan Bumi dengan kehidupan yang asal-usulnya berbeda, dan itu membuka pemahaman baru soal bagaimana kehidupan bermula.',
+      'Society':
+          'Agama, filsafat, dan cara manusia memandang posisinya di alam semesta akan dipertanyakan ulang, dengan reaksi yang sangat beragam.',
+      'Economy':
+          'Dana dan perhatian ke penelitian luar angkasa kemungkinan melonjak, sementara pasar keuangan bisa bergejolak di hari-hari awal pengumuman.',
+      'Technology':
+          'Teleskop, wahana penjelajah, dan teknologi pendeteksi tanda kehidupan akan jadi prioritas pengembangan.',
+      'Environment':
+          'Aturan perlindungan planet kemungkinan diperketat, supaya sampel dari luar Bumi tidak mencemari Bumi, dan sebaliknya.',
+      'Unexpected Consequences':
+          'Satu penemuan justru memunculkan pertanyaan yang lebih besar: kalau satu bentuk kehidupan ada, seberapa banyak lagi di luar sana?',
+    },
+    timeline: [
+      const TimelineStage(
+          label: 'Hari 1',
+          description:
+              'Klaim penemuan diumumkan, dan para ilmuwan di seluruh dunia mulai memeriksa datanya.'),
+      const TimelineStage(
+          label: 'Bulan 1',
+          description:
+              'Hasilnya diuji ulang oleh banyak tim independen sebelum dianggap pasti.'),
+      const TimelineStage(
+          label: 'Tahun 1',
+          description:
+              'Misi lanjutan direncanakan untuk mempelajari penemuan itu lebih dekat.'),
+      const TimelineStage(
+          label: 'Tahun 10',
+          description:
+              'Biologi, filsafat, dan pendidikan sains mulai berubah mengikuti penemuan tersebut.'),
+    ],
+    relatedQuestionIds: ['moon-disappear', 'ai-smarter'],
+  ),
+
+  Question(
+    id: 'no-money',
+    title: 'What if money never existed?',
+    category: 'Society',
+    imagePath: 'assets/images/no_money.jpg',
+    shortAnswer:
+        'Uang cuma alat tukar yang disepakati bersama. Tanpa itu, orang tetap butuh cara untuk berbagi hasil kerja, dan caranya bisa sangat beragam.',
+    dimensions: {
+      'Biology':
+          'Akses ke makanan dan obat-obatan bergantung pada sistem pembagian pengganti uang, jadi kesehatan seseorang lebih tergantung pada hubungan sosialnya.',
+      'Society':
+          'Hubungan antar orang jadi lebih penting: barter, balas budi, dan kepercayaan menggantikan transaksi.',
+      'Economy':
+          'Barter menyulitkan karena kedua pihak harus saling membutuhkan barang yang ditawarkan, jadi perdagangan jarak jauh jauh lebih lambat.',
+      'Technology':
+          'Bank, sistem pembayaran digital, dan bursa saham tidak ada; teknologi yang berkembang cenderung yang membantu mencatat utang dan pertukaran barang.',
+      'Environment':
+          'Tanpa harga, sulit menilai seberapa langka sebuah sumber daya, sehingga pengelolaan alam butuh aturan lain.',
+      'Unexpected Consequences':
+          'Kemungkinan besar manusia menciptakan lagi sesuatu yang fungsinya mirip uang, entah berupa kerang, kupon, atau catatan utang.',
+    },
+    timeline: [
+      const TimelineStage(
+          label: 'Hari 1',
+          description:
+              'Toko, gaji, dan tabungan kehilangan fungsinya, dan orang harus menegosiasikan semuanya secara langsung.'),
+      const TimelineStage(
+          label: 'Bulan 1',
+          description:
+              'Barter mulai dipakai, tapi sering macet karena kebutuhan kedua pihak tidak cocok.'),
+      const TimelineStage(
+          label: 'Tahun 1',
+          description:
+              'Komunitas membuat alat tukar sendiri, seperti barang yang disepakati bernilai atau catatan utang.'),
+      const TimelineStage(
+          label: 'Tahun 10',
+          description:
+              'Sistem baru yang fungsinya mirip uang kemungkinan besar sudah terbentuk lagi.'),
+    ],
+    relatedQuestionIds: ['humans-no-sleep', 'ai-smarter'],
+  ),
 ];
 
 Question getQuestionById(String id) {
@@ -334,6 +459,7 @@ const List<String> featuredQuestionIds = [
   'moon-disappear',
   'breathe-underwater',
   'read-minds', 
+  'no-money',
 ];
 
 List<Question> get featuredQuestions =>

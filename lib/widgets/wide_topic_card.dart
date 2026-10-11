@@ -9,6 +9,9 @@ const Map<String, IconData> topicIconData = {
   'Space': Icons.rocket_launch_outlined,
   'Technology': Icons.memory,
   'Mind': Icons.psychology_outlined,
+  'Animals': Icons.pets,
+  'Universe': Icons.stars,
+  'Society': Icons.groups_outlined,
 };
 
 const Map<String, String> topicSubtitles = {
@@ -17,6 +20,9 @@ const Map<String, String> topicSubtitles = {
   'Space': 'Beyond our world.',
   'Technology': 'Tools that shape tomorrow.',
   'Mind': 'Thoughts, consciousness, and more.',
+  'Animals': 'Creatures big and small.',
+  'Universe': 'Beyond galaxies and time.',
+  'Society': 'How we live together.',
 };
 
 class WideTopicCard extends StatelessWidget {
