@@ -94,4 +94,4 @@ Ilustrasi maskot Kiro dibuat dengan bantuan AI image generation berdasarkan brie
 
 ## Penulis
 
-[Mutiara Nur Hidayah], [25051204412], [Teknik Informatika], [Universitas Negeri Surabaya]
+Mutiara Nur Hidayah, 25051204412, Teknik Informatika, Universitas Negeri Surabaya
