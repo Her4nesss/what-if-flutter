@@ -8,6 +8,7 @@ import 'theme/app_colors.dart';
 import 'screens/main_navigation_page.dart';
 import 'widgets/auth_shell.dart';
 import 'package:flutter/gestures.dart';
+import 'theme/page_transitions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,8 +30,17 @@ class MyApp extends StatelessWidget {
       scrollBehavior: AppScrollBehavior(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-    
-      
+        useMaterial3: true,
+        
+        pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: AdaptivePageTransitionsBuilder(),
+        TargetPlatform.iOS: AdaptivePageTransitionsBuilder(),
+        TargetPlatform.windows: AdaptivePageTransitionsBuilder(),
+        TargetPlatform.macOS: AdaptivePageTransitionsBuilder(),
+        TargetPlatform.linux: AdaptivePageTransitionsBuilder(),
+      },
+    ),
 
         textTheme: boldText,
 

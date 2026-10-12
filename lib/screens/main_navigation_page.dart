@@ -1,9 +1,11 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../data/app_state.dart';
 import '../theme/app_colors.dart';
 import '../widgets/auth_shell.dart';
 import '../widgets/content_frame.dart';
-import 'categories_page.dart';
+import 'about_page.dart';
 import 'explore_page.dart';
 import 'profile_page.dart';
 
@@ -15,7 +17,10 @@ class MainNavigationPage extends StatefulWidget {
 }
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
+  // 0 = Explore, 1 = Profile, 2 = About (About hanya ada di layar lebar)
   int _currentIndex = 0;
+
+  void _go(int index) => setState(() => _currentIndex = index);
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +28,23 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     return ContentFrame(child: _mobile(context));
   }
 
-  // ===== HP / jendela sempit: sama seperti sebelumnya =====
+  // ===== HP / jendela sempit =====
   Widget _mobile(BuildContext context) {
+    final mobileIndex = _currentIndex == 1 ? 1 : 0;
+
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
-        children: const [
-          ExplorePage(),
-          ProfilePage(),
+        index: mobileIndex,
+        children: [
+          const ExplorePage(),
+          // Sengaja TIDAK const: supaya Profile dibangun ulang saat tab
+          // berpindah dan data saved/explored selalu terbaru.
+          ProfilePage(onGoExplore: () => _go(0)),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        currentIndex: mobileIndex,
+        onTap: _go,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: Colors.grey.shade400,
         type: BottomNavigationBarType.fixed,
@@ -63,16 +72,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         children: [
           _TopBar(
             currentIndex: _currentIndex,
-            onExplore: () => setState(() => _currentIndex = 0),
-            onProfile: () => setState(() => _currentIndex = 1),
-            onTopics: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CategoriesPage(),
-                ),
-              );
-            },
+            onExplore: () => _go(0),
+            onAbout: () => _go(2),
+            onProfile: () => _go(1),
             onBell: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Belum ada notifikasi baru')),
@@ -83,14 +85,11 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             child: IndexedStack(
               index: _currentIndex,
               sizing: StackFit.expand,
-                children: [
+              children: [
                 const ExplorePage(),
-                Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 640),
-                    child: const ProfilePage(),
-                  ),
-                ),
+                // Tidak const (lihat catatan di _mobile)
+                ProfilePage(onGoExplore: () => _go(0)),
+                const AboutPage(),
               ],
             ),
           ),
@@ -103,15 +102,15 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 class _TopBar extends StatelessWidget {
   final int currentIndex;
   final VoidCallback onExplore;
+  final VoidCallback onAbout;
   final VoidCallback onProfile;
-  final VoidCallback onTopics;
   final VoidCallback onBell;
 
   const _TopBar({
     required this.currentIndex,
     required this.onExplore,
+    required this.onAbout,
     required this.onProfile,
-    required this.onTopics,
     required this.onBell,
   });
 
@@ -151,14 +150,15 @@ class _TopBar extends StatelessWidget {
                   ),
                   const SizedBox(width: 40),
                   _NavLink(
-                      label: 'Explore',
-                      selected: currentIndex == 0,
-                      onTap: onExplore),
-                  _NavLink(label: 'Topics', selected: false, onTap: onTopics),
+                    label: 'Explore',
+                    selected: currentIndex == 0,
+                    onTap: onExplore,
+                  ),
                   _NavLink(
-                      label: 'Profile',
-                      selected: currentIndex == 1,
-                      onTap: onProfile),
+                    label: 'About',
+                    selected: currentIndex == 2,
+                    onTap: onAbout,
+                  ),
                   const Spacer(),
                   Center(
                     child: IconButton(
@@ -171,11 +171,32 @@ class _TopBar extends StatelessWidget {
                     child: InkWell(
                       onTap: onProfile,
                       customBorder: const CircleBorder(),
-                      child: const CircleAvatar(
-                        radius: 18,
-                        backgroundColor: AppColors.softBlue,
-                        child: Icon(Icons.person,
-                            size: 20, color: AppColors.primary),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: currentIndex == 1
+                                ? AppColors.primary
+                                : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: ValueListenableBuilder<Uint8List?>(
+                          valueListenable: avatarNotifier,
+                          builder: (context, bytes, _) {
+                            return CircleAvatar(
+                              radius: 16,
+                              backgroundColor: AppColors.softBlue,
+                              backgroundImage:
+                                  bytes != null ? MemoryImage(bytes) : null,
+                              child: bytes == null
+                                  ? const Icon(Icons.person,
+                                      size: 18, color: AppColors.primary)
+                                  : null,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),

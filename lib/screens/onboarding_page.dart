@@ -60,6 +60,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // muat gambar Kiro di belakang layar supaya tidak tersendat saat pindah halaman
+    for (final path in const [
+      'assets/images/kiro_wave.png',
+      'assets/images/kiro_thinking.png',
+      'assets/images/kiro_excited.png',
+      'assets/images/kiro_mascot.png',
+    ]) {
+      precacheImage(AssetImage(path), context, onError: (error, stack) {});
+    }
+  }
+  
   @override
   void dispose() {
     _pageController.dispose();
