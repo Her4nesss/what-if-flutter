@@ -84,14 +84,6 @@ flutter build web --release --base-href "/what-if-flutter/"
 - Password disimpan sebagai teks biasa, sebuah simplifikasi untuk skala tugas kuliah.
 - Akun tersimpan lokal, jadi akun di satu browser atau perangkat tidak terbawa ke yang lain.
 
-## Catatan Aset
-
-Ilustrasi maskot Kiro dibuat dengan bantuan AI image generation berdasarkan brief desain orisinal penulis. Teks dan data pertanyaan ditulis oleh penulis.
-
-## Screenshot
-
-*(tempel screenshot aplikasi di sini)*
-
 ## Penulis
 
 Mutiara Nur Hidayah, 25051204412, Teknik Informatika, Universitas Negeri Surabaya
