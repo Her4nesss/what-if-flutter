@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "what-if-176bf"
+  },
+  "targets": {
+    "what-if-176bf": {
+      "hosting": {
+        "explorewhatif": [
+          "explorewhatif"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
