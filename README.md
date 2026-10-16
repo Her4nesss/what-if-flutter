@@ -8,6 +8,7 @@ Dibuat sebagai tugas mata kuliah Pemrograman Berbasis Platfrom
 
 - Web (GitHub Pages): https://her4nesss.github.io/what-if-flutter/
 - Web (Firebase): https://explorewhatif.web.app
+- APK Android: https://github.com/Her4nesss/what-if-flutter/releases/latest
 
 Akun disimpan di browser atau perangkat masing-masing, jadi saat pertama membuka demo, buat akun dulu lewat Create Account.
 
