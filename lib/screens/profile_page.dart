@@ -42,13 +42,22 @@ class _ProfilePageState extends State<ProfilePage> {
   String get _displayName => _fullname.isNotEmpty ? _fullname : _username;
 
   Future<void> _pickAvatar() async {
-    final picked = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-    if (picked == null) return;
-    // Disimpan di avatarNotifier, jadi navbar atas ikut berubah
-    avatarNotifier.value = await picked.readAsBytes();
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+      if (picked == null) return;
+      // Disimpan di avatarNotifier, jadi navbar atas ikut berubah
+      avatarNotifier.value = await picked.readAsBytes();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Foto tidak bisa dimuat, coba foto lain')),
+      );
+    }
   }
 
   Future<void> _logout() async {
